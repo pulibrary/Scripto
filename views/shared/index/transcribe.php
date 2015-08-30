@@ -4,9 +4,8 @@ queue_css_file('scripto-transcribe');
 $head = array('title' => html_escape(implode(' | ', $titleArray)));
 echo head($head);
 if (get_option('scripto_image_viewer') == 'openlayers') {
-    echo js_tag('OpenLayers');
-    // jQuery is enabled by default in Omeka and most themes.
-    // echo js_tag('jquery', 'javascripts/vendor');
+    echo '<link href="' . css_src('ol') . '" media="all" rel="stylesheet" type="text/css" >';
+    echo js_tag('ol');
 }
 ?>
 <script type="text/javascript">

@@ -539,30 +539,60 @@ class ScriptoPlugin extends Omeka_Plugin_AbstractPlugin
     {
         // Check size via local path to avoid to use the server.
         $imagePath = realpath(FILES_DIR . DIRECTORY_SEPARATOR . get_option('scripto_file_source_path') . DIRECTORY_SEPARATOR . $file->filename);
-        $imageSize = ScriptoPlugin::getImageSize($imagePath, 250);
+        $imageSize = ScriptoPlugin::getImageSize($imagePath);
         // Image to send.
         $imageUrl = $file->getWebPath(get_option('scripto_file_source'));
 ?>
+<div id="map" class="map"></div>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-    var scriptoMap = new OpenLayers.Map('scripto-openlayers', {
-        controls: [
-            new OpenLayers.Control.Navigation(),
-            new OpenLayers.Control.PanZoom(),
-            new OpenLayers.Control.KeyboardDefaults()
-        ]
+    var target = 'map';
+    var imgWidth = <?php echo $imageSize['width']; ?>;
+    var imgHeight = <?php echo $imageSize['height']; ?>;
+    var url = <?php echo json_encode($imageUrl); ?>;
+
+    // The zoom is set to extent after map initialization.
+    var zoom = 2;
+    var extent = [0, 0, imgWidth, imgHeight];
+
+    var source = new ol.source.ImageStatic({
+        url: url,
+        projection: projection,
+        imageExtent: extent
     });
-    var graphic = new OpenLayers.Layer.Image(
-        'Document Page',
-        <?php echo js_escape($imageUrl); ?>,
-        new OpenLayers.Bounds(-<?php echo $imageSize['width']; ?>, -<?php echo $imageSize['height']; ?>, <?php echo $imageSize['width']; ?>, <?php echo $imageSize['height']; ?>),
-        new OpenLayers.Size(<?php echo $imageSize['width']; ?>, <?php echo $imageSize['height']; ?>)
-    );
-    scriptoMap.addLayers([graphic]);
-    scriptoMap.zoomToMaxExtent();
-});
-</script>
-<div id="scripto-openlayers" class="<?php echo get_option('scripto_viewer_class'); ?>"></div>
+
+    // Map views always need a projection.  Here we just want to map image
+    // coordinates directly to map coordinates, so we create a projection that uses
+    // the image extent in pixels.
+    var projection = new ol.proj.Projection({
+        code: 'pixel',
+        units: 'pixels',
+        extent: extent
+    });
+
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Image({
+                source: source
+            })
+        ],
+        logo: false,
+        controls: ol.control.defaults({attribution: false}).extend([
+            new ol.control.FullScreen()
+        ]),
+        interactions: ol.interaction.defaults().extend([
+            new ol.interaction.DragRotateAndZoom()
+        ]),
+        target: target,
+        view: new ol.View({
+                projection: projection,
+                center: ol.extent.getCenter(extent),
+                zoom: zoom
+            })
+    });
+
+    // Initialize zoom to extent.
+    map.getView().fit(extent, map.getSize());
+ </script>
 <?php
     }
 
@@ -663,8 +693,8 @@ jQuery(document).ready(function() {
         if (is_int($width)) {
             $height = round(($width * $size[1]) / $size[0]);
         } else {
-            $width = $size[1];
-            $height = $size[0];
+            $width = $size[0];
+            $height = $size[1];
         }
         return array('width' => $width, 'height' => $height);
     }
