@@ -320,7 +320,7 @@ class ScriptoPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookConfigForm($args)
     {
-        $view = $args['view'];
+        $view = get_view();
 
         // Set form defaults.
         list($elementSetName, $elementName) = explode(':', get_option('scripto_source_element'));
@@ -458,10 +458,10 @@ class ScriptoPlugin extends Omeka_Plugin_AbstractPlugin
 <script type="text/javascript">
     Omeka.messages = jQuery.extend(Omeka.messages,
         {'scripto':{
-            'notToTranscribe':'<?php echo __('Not to transcribe'); ?>',
-            'toTranscribe':'<?php echo __('To transcribe'); ?>',
-            'confirmation':'<?php echo __('Are your sure to fill all pages of this item from the field "%s" into the field Scripto:Transcription?', get_option('scripto_source_element')); ?>',
-            'error':'<?php echo __('Failure during process.'); ?>'
+            'notToTranscribe':<?php echo json_encode(__('Not to transcribe')); ?>,
+            'toTranscribe':<?php echo json_encode(__('To transcribe')); ?>,
+            'confirmation':<?php echo json_encode(__('Are your sure to fill all pages of this item from the field "%s" into the field Scripto:Transcription?', get_option('scripto_source_element'))); ?>,
+            'error':<?php echo json_encode(__('Failure during process.')); ?>
         }}
     );
 </script>

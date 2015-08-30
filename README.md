@@ -182,7 +182,7 @@ Copyright
 [Scribe]: https://github.com/ui-libraries/scribe
 [CsvImport]: https://github.com/Daniel-KM/CsvImport
 [sample]: https://gist.github.com/saverkamp/4732757
-[Scripto issues]: https://github.com/Omeka/plugin-Scripto/Issues
+[Scripto issues]: https://github.com/Omeka/plugin-Scripto/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html "GNU/GPL v3"
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
 [UI Libraries]: http://www.lib.uiowa.edu "University of Iowa Libraries"

@@ -86,7 +86,7 @@ div.olControlMousePosition {
 .olControlOverviewMapContainer {
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: auto;
 }
 
 .olControlOverviewMapElement {
