@@ -22,7 +22,8 @@ begin
 	pudl_url = "http://pudl.princeton.edu:8080/exist/pudl/Objects/" + pudlno
   loris_prefix = 'http://libimages.princeton.edu/loris/'
   loris_suffix = '/full/full/0/native.jpg'
-  csv_header = ["title","identifier","source","ispartof","relation","audience","files"]
+	csv_item_header = ["title","identifier","source","ispartof","relation","audience","files"]
+  csv_file_header = ["filename","title","identifier","source","status","transcription","Omeka file order"]
 
   # go get 'em!
   doc = `curl #{pudl_url}`
@@ -41,8 +42,27 @@ begin
   file_list = files.join(",")
 
   CSV.open("import_items.csv", "w") do |csv|
-    csv << csv_header
+    csv << csv_item_header
     csv << [title,id,source,ispartof,relation,audience,file_list]
   end
+
+	#files file
+  #filename,title,identifier,source,status,transcription,Omeka file order
+  #http://digital.lib.uiowa.edu/utils/getfile/collection/kinnick/id/2101/filename/2269.jpg,Front,kinnick_2234_2101,http://digital.lib.uiowa.edu/cdm/ref/collection/kinnick/id/2101,Not Started,,1
+	file_data = obj_xml.xpath('//structure[@type="RelatedObjects"]/div/orderedlist/div')
+	rows = []
+	file_data.each do |div|
+		rows << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('order'),pudl_url,'Not Started','',div.attr('order')]
+	end
+
+	CSV.open("import_files.csv", "w") do |csv|
+		csv << csv_file_header
+		rows.each do |row|
+			csv << row
+		end
+		#file_data.each do |div|
+		#	csv << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('order'),pudl_url,'Not Started','',div.attr('order')]
+		#end
+	end
 
 end
