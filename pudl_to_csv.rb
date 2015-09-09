@@ -41,7 +41,7 @@ begin
   #files needs quotes
   file_list = files.join(",")
 
-  CSV.open("import_items.csv", "w") do |csv|
+  CSV.open("#{pudlno}_items.csv", "w") do |csv|
     csv << csv_item_header
     csv << [title,id,source,ispartof,relation,audience,file_list]
   end
@@ -55,7 +55,7 @@ begin
 		rows << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('order'),pudl_url,'Not Started','',div.attr('order')]
 	end
 
-	CSV.open("import_files.csv", "w") do |csv|
+	CSV.open("#{pudlno}_files.csv", "w") do |csv|
 		csv << csv_file_header
 		rows.each do |row|
 			csv << row
