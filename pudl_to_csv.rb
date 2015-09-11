@@ -52,7 +52,7 @@ begin
 	file_data = obj_xml.xpath('//structure[@type="RelatedObjects"]/div/orderedlist/div')
 	rows = []
 	file_data.each do |div|
-		rows << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('order'),pudl_url,'Not Started','',div.attr('order')]
+		rows << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('img').sub('urn:pudl:images:deliverable:', ""),pudl_url,'Not Started','',div.attr('order')]
 	end
 
 	CSV.open("#{pudlno}_files.csv", "w") do |csv|

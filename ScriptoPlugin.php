@@ -66,6 +66,30 @@ class ScriptoPlugin extends Omeka_Plugin_AbstractPlugin
     );
 
     /**
+     * @var MIME types compatible with OpenSeadragon.
+     */
+    public static $fileIdentifiersOpenSeadragon = array(
+        'mimeTypes' => array(
+            // gif
+            'image/gif', 'image/x-xbitmap', 'image/gi_',
+            // jpg
+            'image/jpeg', 'image/jpg', 'image/jpe_', 'image/pjpeg',
+            'image/vnd.swiftview-jpeg',
+            // png
+            'image/png', 'application/png', 'application/x-png',
+            // bmp
+            'image/bmp', 'image/x-bmp', 'image/x-bitmap',
+            'image/x-xbitmap', 'image/x-win-bitmap',
+            'image/x-windows-bmp', 'image/ms-bmp', 'image/x-ms-bmp',
+            'application/bmp', 'application/x-bmp',
+            'application/x-win-bitmap',
+        ),
+        'fileExtensions' => array(
+            'gif', 'jpeg', 'jpg', 'jpe', 'png', 'bmp',
+        ),
+    );
+
+    /**
      * @var MIME types compatible with OpenLayers.
      */
     public static $fileIdentifiersOpenLayers = array(
@@ -331,7 +355,7 @@ class ScriptoPlugin extends Omeka_Plugin_AbstractPlugin
             $element = get_db()->getTable('Element')->findByElementSetNameAndElementName($elementSetName, $elementName);
         }
         $imageViewer = get_option('scripto_image_viewer');
-        if (!in_array($imageViewer, array('openlayers', 'zoomit'))) {
+        if (!in_array($imageViewer, array('openlayers', 'zoomit', 'openseadragon'))) {
             $imageViewer = 'default';
         }
         $useGoogleDocsViewer = get_option('scripto_use_google_docs_viewer');
@@ -527,6 +551,18 @@ class ScriptoPlugin extends Omeka_Plugin_AbstractPlugin
             'item' => $item,
             'doc' => $doc,
         ));
+    }
+
+    /**
+     * add_file_display_callback() callback for OpenSeadragon.
+     *
+     * @see Scripto_IndexController::init()
+     * @param File $file
+     */
+    public static function openSeadragon($file)
+    {
+      $img = str_replace("/full/full/0/native.jpg", "", $file['original_filename']);
+      echo $img;
     }
 
     /**

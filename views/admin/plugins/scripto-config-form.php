@@ -65,7 +65,8 @@
             null,
             array('default' => __('Omeka default'),
                   'openlayers' => __('OpenLayers'),
-                  'zoomit' => __('Zoom.it')),
+                  'zoomit' => __('Zoom.it'),
+                  'openseadragon' => __('OpenSeadragon')),
             null
         ); ?>
     </div>
