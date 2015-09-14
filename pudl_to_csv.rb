@@ -21,7 +21,7 @@ begin
   # vars
 	pudl_url = "http://pudl.princeton.edu:8080/exist/pudl/Objects/" + pudlno
   loris_prefix = 'http://libimages.princeton.edu/loris/'
-  loris_suffix = '/full/full/0/native.jpg'
+  loris_suffix = '/full/90,/0/native.jpg'
 	csv_item_header = ["title","identifier","source","ispartof","relation","audience","files"]
   csv_file_header = ["filename","title","identifier","source","status","transcription","Omeka file order"]
 
@@ -39,7 +39,7 @@ begin
   files = obj_xml.xpath('//structure[@type="RelatedObjects"]/div/orderedlist/div/@img').to_a
   files.map! {|file| loris_prefix + file.to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix }
   #files needs quotes
-  file_list = files.join(",")
+  file_list = files.join("|")
 
   CSV.open("#{pudlno}_items.csv", "w") do |csv|
     csv << csv_item_header
