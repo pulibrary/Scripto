@@ -13,6 +13,12 @@ require 'parseconfig'
 require 'nokogiri'
 require 'csv'
 
+def pad_order(number)
+  pad_digits = 6 - number.to_s.length
+  pad_string = "0" * pad_digits
+  "#{pad_string}#{number.to_s}"
+end
+
 begin
 	# args
 	pudlno = ARGV[0]
@@ -52,7 +58,7 @@ begin
 	file_data = obj_xml.xpath('//structure[@type="RelatedObjects"]/div/orderedlist/div')
 	rows = []
 	file_data.each do |div|
-		rows << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('img').sub('urn:pudl:images:deliverable:', ""),pudl_url,'Not Started','',div.attr('order')]
+		rows << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('img').sub('urn:pudl:images:deliverable:', ""),pudl_url,'Not Started','',pad_order(div.attr('order'))]
 	end
 
 	CSV.open("#{pudlno}_files.csv", "w") do |csv|
