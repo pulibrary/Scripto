@@ -44,7 +44,6 @@ begin
   doc = `curl #{pulfa_url}`
   obj_xml = Nokogiri::HTML(doc)
 
-  puts "curl " + mets_url
   mets = `curl #{mets_url}`
   mets_xml = Nokogiri::XML(mets)
 
@@ -69,14 +68,17 @@ begin
 	#files file
   #filename,title,identifier,source,status,transcription,Omeka file order
   #http://digital.lib.uiowa.edu/utils/getfile/collection/kinnick/id/2101/filename/2269.jpg,Front,kinnick_2234_2101,http://digital.lib.uiowa.edu/cdm/ref/collection/kinnick/id/2101,Not Started,,1
-  file_data = mets_xml.xpath('//mets:file[@USE="deliverable"]', 'mets' => mets_ns)
+  file_grp = mets_xml.xpath('//mets:fileGrp', 'mets' => mets_ns)
+
   rows = []
-  file_data.each do |div|
-    f = div.first_element_child
-    f_id = div.attr('ID')
+  file_grp.each do |grp|
+    f = grp.xpath('//mets:file[@USE="deliverable"]/mets:FLocat', 'mets' => mets_ns, 'xlink' => xlink_ns)
+    f_id = grp.attr('ID')
     #puts f_id // this outputs the ids, but the expansion of the var in the next line does not work as expected (hardcoded ids work)
     deliverable = mets_xml.xpath("//mets:fptr[@FILEID=\"#{f_id}\"]/..","mets" => mets_ns)
-    rows << [loris_prefix + f.attr('xlink:href').sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page " + deliverable.attr('LABEL'),f.attr('xlink:href').sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(deliverable.attr('ORDER'))]
+    label = deliverable.attr("LABEL")
+    ordernum = deliverable.attr("ORDER")
+    rows << [loris_prefix + f.attr('href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page " + label,f.attr('href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
   end
 
 	CSV.open("#{id}_files.csv", "w") do |csv|
