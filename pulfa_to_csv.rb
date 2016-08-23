@@ -44,6 +44,7 @@ begin
   doc = `curl #{pulfa_url}`
   obj_xml = Nokogiri::HTML(doc)
 
+  puts "curl " + mets_url
   mets = `curl #{mets_url}`
   mets_xml = Nokogiri::XML(mets)
 
@@ -56,7 +57,6 @@ begin
   audience = '000000'
 
   files = mets_xml.xpath('//mets:file[@USE="deliverable"]/mets:FLocat/@xlink:href', 'mets' => mets_ns, 'xlink' => xlink_ns).to_a
-  #files = mets_xml.xpath('//file[@USE="deliverable"]/flocat/@xlink:href', 'xlink' => xlink_ns).to_a
   files.map! {|file| loris_prefix + file.to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix }
   #files needs quotes
   file_list = files.join("|")
@@ -69,20 +69,21 @@ begin
 	#files file
   #filename,title,identifier,source,status,transcription,Omeka file order
   #http://digital.lib.uiowa.edu/utils/getfile/collection/kinnick/id/2101/filename/2269.jpg,Front,kinnick_2234_2101,http://digital.lib.uiowa.edu/cdm/ref/collection/kinnick/id/2101,Not Started,,1
-	file_data = mets_xml.xpath('//mets:file[@USE="deliverable"]/mets:FLocat')
-	rows = []
-	file_data.each do |div|
-		rows << [loris_prefix + div.attr('xlink:href').sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page " + get_order(div.attr('xlink:href')),div.attr('xlink:href').sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',get_order(div.attr('xlink:href'))]
-	end
+  file_data = mets_xml.xpath('//mets:file[@USE="deliverable"]', 'mets' => mets_ns)
+  rows = []
+  file_data.each do |div|
+    f = div.first_element_child
+    f_id = div.attr('ID')
+    #puts f_id // this outputs the ids, but the expansion of the var in the next line does not work as expected (hardcoded ids work)
+    deliverable = mets_xml.xpath("//mets:fptr[@FILEID=\"#{f_id}\"]/..","mets" => mets_ns)
+    rows << [loris_prefix + f.attr('xlink:href').sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page " + deliverable.attr('LABEL'),f.attr('xlink:href').sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(deliverable.attr('ORDER'))]
+  end
 
 	CSV.open("#{id}_files.csv", "w") do |csv|
 		csv << csv_file_header
 		rows.each do |row|
 			csv << row
 		end
-		#file_data.each do |div|
-		#	csv << [loris_prefix + div.attr('img').sub('urn:pudl:images:deliverable:', "") + loris_suffix,div.attr('label'),div.attr('order'),pudl_url,'Not Started','',div.attr('order')]
-		#end
 	end
 
 end
