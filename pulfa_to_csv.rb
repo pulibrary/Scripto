@@ -71,17 +71,20 @@ begin
   file_grp = mets_xml.xpath('//mets:fileGrp', 'mets' => mets_ns)
 
   rows = []
+
   file_grp.each do |grp|
-    f = grp.xpath('//mets:file[@USE="deliverable"]/mets:FLocat', 'mets' => mets_ns, 'xlink' => xlink_ns)
-    f_id = grp.attr('ID')
-    #puts f_id // this outputs the ids, but the expansion of the var in the next line does not work as expected (hardcoded ids work)
-    deliverable = mets_xml.xpath("//mets:fptr[@FILEID=\"#{f_id}\"]/..","mets" => mets_ns)
-    label = deliverable.attr("LABEL")
-    ordernum = deliverable.attr("ORDER")
-    rows << [loris_prefix + f.attr('href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page #{label}",f.attr('href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
+    if !grp.children.empty?
+      f = grp.xpath('//mets:file[@USE="deliverable"]/mets:FLocat', 'mets' => mets_ns, 'xlink' => xlink_ns)
+      f_id = grp.attr('ID')
+      #puts f_id // this outputs the ids, but the expansion of the var in the next line does not work as expected (hardcoded ids work)
+      deliverable = mets_xml.xpath("//mets:fptr[@FILEID=\"#{f_id}\"]/..","mets" => mets_ns)
+      label = deliverable.attr("LABEL")
+      ordernum = deliverable.attr("ORDER")
+      rows << [loris_prefix + f.attr('href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page #{label}",f.attr('href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
+    end
   end
 
-	CSV.open("#{id}_files.csv", "w") do |csv|
+	CSV.open("#{id}_files.csv", "w", { force_quotes: true }) do |csv|
 		csv << csv_file_header
 		rows.each do |row|
 			csv << row
