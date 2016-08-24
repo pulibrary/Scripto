@@ -78,7 +78,7 @@ begin
     deliverable = mets_xml.xpath("//mets:fptr[@FILEID=\"#{f_id}\"]/..","mets" => mets_ns)
     label = deliverable.attr("LABEL")
     ordernum = deliverable.attr("ORDER")
-    rows << [loris_prefix + f.attr('href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page " + label,f.attr('href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
+    rows << [loris_prefix + f.attr('href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page #{label}",f.attr('href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
   end
 
 	CSV.open("#{id}_files.csv", "w") do |csv|
