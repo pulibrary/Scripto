@@ -85,7 +85,7 @@ begin
     end
   end
 
-	CSV.open("#{id}_files.csv", "w", { force_quotes: true }) do |csv|
+	CSV.open("#{id}_files.csv", "w") do |csv|
 		csv << csv_file_header
 		rows.each do |row|
 			csv << row
