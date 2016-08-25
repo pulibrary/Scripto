@@ -74,13 +74,14 @@ begin
 
   file_grp.each do |grp|
     if !grp.children.empty?
-      f = grp.xpath('//mets:file[@USE="deliverable"]/mets:FLocat', 'mets' => mets_ns, 'xlink' => xlink_ns)
+      #f = grp.xpath('//mets:file[@USE="deliverable"]/mets:FLocat', 'mets' => mets_ns, 'xlink' => xlink_ns)
+      f = grp.first_element_child.first_element_child
       f_id = grp.attr('ID')
       #puts f_id // this outputs the ids, but the expansion of the var in the next line does not work as expected (hardcoded ids work)
       deliverable = mets_xml.xpath("//mets:fptr[@FILEID=\"#{f_id}\"]/..","mets" => mets_ns)
       label = deliverable.attr("LABEL")
       ordernum = deliverable.attr("ORDER")
-      rows << [loris_prefix + f.attr('href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page #{label}",f.attr('href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
+      rows << [loris_prefix + f.attr('xlink:href').to_s.sub('urn:pudl:images:deliverable:', "") + loris_suffix,"Page #{label}",f.attr('xlink:href').to_s.sub('urn:pudl:images:deliverable:', ""),pulfa_url,'Not Started','',pad_order(ordernum)]
     end
   end
 
