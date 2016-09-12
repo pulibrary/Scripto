@@ -26,8 +26,8 @@ begin
 
   # vars
 	pudl_url = "http://pudl.princeton.edu:8080/exist/pudl/Objects/" + pudlno
-  loris_prefix = 'http://libimages.princeton.edu/loris/'
-  loris_suffix = '/full/90,/0/native.jpg'
+  loris_prefix = 'http://libimages.princeton.edu/loris2/'
+  loris_suffix = '/full/90,/0/default.jpg'
 	csv_item_header = ["title","identifier","source","ispartof","relation","audience","files"]
   csv_file_header = ["filename","title","identifier","source","status","transcription","Omeka file order"]
 
