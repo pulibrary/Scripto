@@ -50,7 +50,7 @@ begin
   #files needs quotes
   file_list = files.join("|")
 
-  CSV.open("#{figgy_num}_items.csv", "w") do |csv|
+  CSV.open("#{figgy_num}_items.csv", "w", force_quotes: true) do |csv|
     csv << csv_item_header
     csv << ["#{title}",id,source,ispartof,relation,audience,file_list]
   end
@@ -69,13 +69,13 @@ begin
       canvas['label'],
       canvas["images"][0]["@id"],
       "https://figgy.princeton.edu/catalog/" + figgy_num,
-      'Not Started',
-      '',
+      "Not Started",
+      "",
       pad_order(i)
     ]
 	end
 
-	CSV.open("#{figgy_num}_files.csv", "w") do |csv|
+	CSV.open("#{figgy_num}_files.csv", "w", force_quotes: true) do |csv|
 		csv << csv_file_header
 		rows.each do |row|
 			csv << row
