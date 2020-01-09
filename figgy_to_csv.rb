@@ -13,6 +13,7 @@ require 'parseconfig'
 require 'json'
 #require 'nokogiri'
 require 'csv'
+require 'uri'
 
 def pad_order(number)
   pad_digits = 6 - number.to_s.length
@@ -65,7 +66,7 @@ begin
 	canvases.each do |canvas, index|
     i=i+1
 		rows << [
-      canvas["images"][0]["resource"]["@id"],
+      URI.unescape(canvas["images"][0]["resource"]["@id"]),
       canvas['label'],
       canvas["images"][0]["@id"],
       "https://figgy.princeton.edu/catalog/" + figgy_num,
