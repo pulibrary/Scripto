@@ -1,6 +1,21 @@
 Scripto (plugin for Omeka)
 ==========================
 
+Instructions for loading Figgy records
+-------
+1. Find your item in Figgy
+2. Click on it to view the show page, then copy the figgy_id from the URL (ID is in bold: https://figgy.princeton.edu/catalog/*4b73d943-b005-4c02-ae96-19060ad8b43c*)
+3. Clone this repo to your local drive and cd into it
+4. Run `ruby ./figgy_to_csv.rb {figgy_id}`
+5. Log into http://transcribe.princeton.edu/admin
+6. Click CSV import, select the `item` file to upload, and map the fields appropriately. (Make sure to check the `Files?` column for the last row labeled `files`.)
+7. Click CSV import again, select the `files` file to upload, and map the fields appropriately. (Make sure to check the `filename?` column for the first row labeled `filename`.)
+8. Make note of the item id in Omeka (part of the public url)
+8. Log onto the server `ssh pulsys@libphp-prod.princeton.edu`
+9. `sudo su - drupal`
+10. `cd /var/www/apps/transcribe/plugins/Scripto`
+11. Add image numbers to the thumbnail pages: `php update_order.php {item_id} 96` (note: that second argument is the element_id for Weight)
+11. If you want to double check the element_id, Log into the mysql database, use the transcribe_omeka db, and run `select * from elements where name = "Weight"`
 
 Summary
 -------
